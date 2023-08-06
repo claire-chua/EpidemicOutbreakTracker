@@ -5,14 +5,14 @@ from models.user import User
 
 
 
-VALID_STATUSES = ('Active', 'Suspected')
+VALID_STATUSES = ('Active', 'Suspected','Not Active')
 
 
 class Case(db.Model):
     __tablename__ = "cases"
 
     id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.String)
+    status = db.Column(db.String, nullable=False)
     location = db.Column(db.String, nullable=False)
     date = db.Column(db.Date)
     #
@@ -32,7 +32,7 @@ class CaseSchema(ma.Schema):
     status = fields.String(validate=OneOf(VALID_STATUSES))
 
     class Meta:
-        fields = ('id', 'status', 'location', 'date', 'user_id')
+        fields = ('id', 'status', 'location', 'date','user_id')
 
 
 case_schema = CaseSchema()

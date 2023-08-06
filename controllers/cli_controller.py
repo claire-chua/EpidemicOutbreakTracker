@@ -30,7 +30,6 @@ def seed_db():
         User(
             name='admin',
             email='admin@gmail.com',
-            phone_number='0413294923',
             password=bcrypt.generate_password_hash('admincontrol').decode('utf-8'),
             id=1,
             is_admin=True,
@@ -38,7 +37,6 @@ def seed_db():
         User(
             name='Claire',
             email='clair3.chua@gmail.com',
-            phone_number='0449179562',
             password=bcrypt.generate_password_hash('clairecontrol').decode('utf-8'),
             id=2,
             is_admin=False,
@@ -51,7 +49,7 @@ def seed_db():
         Case(
             id=3,
             status='Active',
-            date=datetime.now(),
+            date="15/08/2023",
             location='Australia,Melbourne',
             user_id=2,
 
