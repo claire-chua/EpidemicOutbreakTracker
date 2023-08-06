@@ -31,6 +31,7 @@ def create_user():
     user = User()
     user.id = body_data.get('id')
     user.name = body_data.get('name')
+    user.phone_number =body_data.get('phone_number')
     user.email = body_data.get('email')
     user.is_admin = body_data.get('is_admin')
     if body_data.get('password'):
@@ -46,10 +47,8 @@ def create_user():
 @users_bp.route('/login', methods=['POST'])
 def user_login():
     body_data = request.get_json()
-    # Find the user by email address
     stmt = db.select(User).filter_by(email=body_data.get('email'))
     user = db.session.scalar(stmt)
-    # If user exists and password is correct
     if user and bcrypt.check_password_hash(user.password, body_data.get('password')):
         token = create_access_token(identity=str(user.id), expires_delta=timedelta(days=1))
         return ('Success')
