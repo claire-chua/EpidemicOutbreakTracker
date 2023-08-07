@@ -1,6 +1,7 @@
 from flask import Blueprint
 from init import db, bcrypt
 from models.disease import Disease
+from models.symptom_tracking import Symptom_Tracking
 from models.user import User
 from models.case import Case
 from datetime import datetime
@@ -84,7 +85,17 @@ def seed_db():
         )
     ]
     db.session.add_all(diseases)
+    symptom_trackings = [
+        Symptom_Tracking(
+            id=1,
+            date="2023/05/07",
+            symptoms="fever,rash",
+            user_id=1
 
+
+        )
+    ]
+    db.session.add_all(symptom_trackings)
     db.session.commit()
 
     return 'Success'

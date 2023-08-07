@@ -1,12 +1,9 @@
 import functools
-
 from flask import Blueprint, request
 from psycopg2 import errorcodes
-
 from init import db
 from models.user import User
 from models.case import Case, case_schema, cases_schema
-from datetime import date
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import exc
 
@@ -34,16 +31,22 @@ def get_one_case(id):
 @cases_bp.route('/add', methods=['POST'])
 @jwt_required()
 def create_case():
-    body_data = case_schema.load(request.get_json())
-    case = Case(
-        id=body_data.get('id'),
-        status=body_data.get('status'),
-        date=body_data.get('date'),
-        # user_id=body_data.get('user_id'),
-        user_id=get_jwt_identity(),
-        location=body_data.get('location'),
-        disease_id=body_data.get('disease_id')
-    )
+    try:
+        body_data = case_schema.load(request.get_json())
+        case = Case(
+            id=body_data.get('id'),
+            status=body_data.get('status'),
+            date=body_data.get('date'),
+            # user_id=body_data.get('user_id'),
+            user_id=get_jwt_identity(),
+            location=body_data.get('location'),
+            disease_id=body_data.get('disease_id')
+        )
+    except exc.IntegrityError as err:
+        if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
+            return {'Error': f'Unable to create disease type,{err.orig.diag.message_detail} '}, 409
+        if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
+            return {'Error': f'The {err.orig.diag.column_name} is required'}, 409
     db.session.add(case)
     db.session.commit()
     return case_schema.dump(case), 201

@@ -14,10 +14,10 @@ class User(db.Model):
 
 
     cases = db.relationship('Case', back_populates='users',  cascade='all, delete')
-
+    symptom_trackings=db.relationship('Symptom_Tracking', back_populates='users')
 class UserSchema(ma.Schema):
     case = fields.List(fields.Nested('CaseSchema', exclude=['user']))
-
+    symptom_tracking = fields.List(fields.Nested('Symptom_TrackingSchema', exclude=['user']))
     class Meta:
         fields = ('id', 'name', 'email', 'password', 'is_admin')
 
