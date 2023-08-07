@@ -41,7 +41,8 @@ def create_case():
         date=body_data.get('date'),
         # user_id=body_data.get('user_id'),
         user_id=get_jwt_identity(),
-        location=body_data.get('location')
+        location=body_data.get('location'),
+        disease_id=body_data.get('disease_id')
     )
     db.session.add(case)
     db.session.commit()
@@ -66,7 +67,7 @@ def authorise_as_admin(fn):
 def delete_case(id):
     stmt = db.select(Case).filter_by(id=id)
     case = db.session.scalar(stmt)
-    if case:
+    if case or str(case.user_id) == get_jwt_identity() :
         db.session.delete(case)
         db.session.commit()
         return {'message': f'Case {id} deleted'}

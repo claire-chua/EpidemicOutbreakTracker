@@ -55,6 +55,7 @@ def seed_db():
             user_id=2,
             disease_id=2
 
+
         )
     ]
     db.session.add_all(cases)

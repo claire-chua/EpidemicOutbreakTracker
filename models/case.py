@@ -3,8 +3,6 @@ from marshmallow import fields, validates
 from marshmallow.validate import OneOf
 from models.user import User
 
-
-
 VALID_STATUSES = ('Active', 'Suspected', 'Not Active')
 
 
@@ -16,14 +14,13 @@ class Case(db.Model):
     location = db.Column(db.String, nullable=False)
     date = db.Column(db.Date)
 
-    disease_id = db.Column(db.Integer, db.ForeignKey('diseases.id'), nullable=False)
+    disease_id = db.Column(db.Integer, db.ForeignKey('diseases.id'))
+
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     # disease_id = db.Column(db.String, db.ForeignKey('diseases.id'))
 
     users = db.relationship("User", back_populates='cases', foreign_keys=[user_id])
-    diseases = db.relationship('Disease', back_populates='cases',foreign_keys=[disease_id])
-
-
+    diseases = db.relationship('Disease', back_populates='cases', foreign_keys=[disease_id])
 
 
 class CaseSchema(ma.Schema):
@@ -33,7 +30,7 @@ class CaseSchema(ma.Schema):
     status = fields.String(validate=OneOf(VALID_STATUSES))
 
     class Meta:
-        fields = ('id', 'status', 'location', 'date','user_id')
+        fields = ('id', 'status', 'location', 'date', 'user_id', 'disease_id', 'disease_name')
 
 
 case_schema = CaseSchema()
