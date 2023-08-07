@@ -12,8 +12,7 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
-    # case_id = db.Column(db.Integer, db.ForeignKey('case.id'), nullable=False)
-    #
+
     cases = db.relationship('Case', back_populates='users',  cascade='all, delete')
 
 class UserSchema(ma.Schema):

@@ -5,7 +5,7 @@ from models.user import User
 
 
 
-VALID_STATUSES = ('Active', 'Suspected','Not Active')
+VALID_STATUSES = ('Active', 'Suspected', 'Not Active')
 
 
 class Case(db.Model):
@@ -15,14 +15,14 @@ class Case(db.Model):
     status = db.Column(db.String, nullable=False)
     location = db.Column(db.String, nullable=False)
     date = db.Column(db.Date)
-    #
+
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     # disease_id = db.Column(db.String, db.ForeignKey('diseases.id'))
 
     users = db.relationship("User", back_populates='cases', foreign_keys=[user_id])
+    # diseases = db.relationship('Disease', back_populates='cases', foreign_keys=[disease_id])
 
 
-    # disease = db.relationship('Disease', back_populates='cases')
 
 
 class CaseSchema(ma.Schema):

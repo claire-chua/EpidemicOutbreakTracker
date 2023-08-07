@@ -85,3 +85,25 @@ def user_login():
         return {'email': user.email, 'token': token, 'is_admin': user.is_admin}
     else:
         return {'error': 'Invalid email or password'}, 401
+@users_bp.route('/<id>', methods=['PUT', 'PATCH'])
+@jwt_required()
+def update_user(id):
+    body_data = user_schema.load(request.get_json(), partial=True)
+    stmt = db.select(User).filter_by(id=id)
+    user = db.session.scalar(stmt)
+    try:
+        if user:
+            if str(id) != get_jwt_identity():
+                return {'error': 'Not authorised to update login details'}, 403
+            user.id = body_data.get('id') or user.id
+            user.name = body_data.get('name') or user.name
+            user.email = body_data.get('email') or user.email
+            user.password = body_data.get('password') or user.password
+
+            db.session.commit()
+            return user_schema.dump(user)
+        else:
+            return {'error': f'User id {id} not found'}, 404
+    except exc.IntegrityError as err:
+        if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
+            return {'Error': f'Unable to update user,{err.orig.diag.message_detail} '}, 409

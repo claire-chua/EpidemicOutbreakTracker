@@ -1,5 +1,6 @@
 from flask import Blueprint
 from init import db, bcrypt
+from models.disease import Disease
 from models.user import User
 from models.case import Case
 from datetime import datetime
@@ -56,6 +57,22 @@ def seed_db():
         )
     ]
     db.session.add_all(cases)
+
+    diseases = [
+        Disease(
+            id=1,
+            name="Chickenpox",
+            description="A contagious infection, which is characterised by an itchy, red which may develop into "
+                        "fluid-filled blisters. Additional symptoms include; fever and headache. The symptoms "
+                        "typically start two weeks after exposure and may be prevalent for 10 days to 3 weeks.",
+            severity="Typically mild but can result in serious complications such as meningitis and pneumonia. Risk "
+                     "Category: Pregnant woman, Newborn babies, Immunocompromised Individuals",
+            vaccine="Yes"
+
+        )
+    ]
+    db.session.add_all(diseases)
+
     db.session.commit()
 
     return 'Success'
