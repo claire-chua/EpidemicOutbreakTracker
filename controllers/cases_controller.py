@@ -22,7 +22,7 @@ def get_all_cases():
     except exc.SQLAlchemyError:
         return 'Table does not exist, please ensure to create all tables'
 
-@cases_bp.route('/<int:id>')
+@cases_bp.route('/<id>')
 def get_one_case(id):
     stmt = db.select(Case).filter_by(id=id)
     card = db.session.scalar(stmt)

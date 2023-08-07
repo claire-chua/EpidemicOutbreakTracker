@@ -5,6 +5,7 @@ from init import db, ma
 
 VALID_VACCINE_STATUSES = ('Yes', 'No', 'In Progress')
 
+
 class Disease(db.Model):
     __tablename__ = 'diseases'
 
@@ -15,18 +16,18 @@ class Disease(db.Model):
     vaccine = db.Column(db.String)
 
 
-    # case_id = db.Column(db.Integer, db.ForeignKey('case.id'), nullable=False)
-    #
-    # cases = db.relationship('Cases', back_populates='diseases')
+
+    cases = db.relationship('Case', back_populates='diseases')
+
 
 class DiseaseSchema(ma.Schema):
-    case = fields.List(fields.Nested('DiseaseSchema', exclude=['user']))
+    case = fields.List(fields.Nested('CaseSchema', exclude=['user']))
 
     vaccine = fields.String(validate=OneOf(VALID_VACCINE_STATUSES))
+
     class Meta:
-        fields = ('id', 'name', 'description', 'severity','vaccine','case_id')
+        fields = ('id', 'name', 'description', 'severity', 'vaccine', 'case_id')
 
 
 disease_schema = DiseaseSchema()
 diseases_schema = DiseaseSchema(many=True)
-

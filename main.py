@@ -4,6 +4,7 @@ from controllers.cli_controller import db_commands
 from flask import Flask
 
 from controllers.cli_controller import db_commands
+from controllers.diseases_controller import diseases_bp
 from controllers.users_controller import users_bp
 from controllers.cases_controller import cases_bp
 from init import db, ma, bcrypt, jwt
@@ -28,5 +29,6 @@ def create_app():
     app.register_blueprint(db_commands)
     app.register_blueprint(users_bp)
     app.register_blueprint(cases_bp)
+    app.register_blueprint(diseases_bp)
 
     return app

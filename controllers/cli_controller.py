@@ -53,6 +53,7 @@ def seed_db():
             date="15/08/2023",
             location='Australia,Melbourne',
             user_id=2,
+            disease_id=2
 
         )
     ]
@@ -67,7 +68,17 @@ def seed_db():
                         "typically start two weeks after exposure and may be prevalent for 10 days to 3 weeks.",
             severity="Typically mild but can result in serious complications such as meningitis and pneumonia. Risk "
                      "Category: Pregnant woman, Newborn babies, Immunocompromised Individuals",
-            vaccine="Yes"
+            vaccine="Yes",
+
+
+        ),
+        Disease(
+            id=2,
+            name="Ebola Virus",
+            description="A rare but often fatal disease spread by fluids. ",
+            severity="High",
+            vaccine="Yes",
+
 
         )
     ]
