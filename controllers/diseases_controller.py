@@ -28,6 +28,7 @@ def get_all_disease_types():
 
 @diseases_bp.route('/<id>', methods=['GET'])
 def get_one_disease_type(id):
+    #filter by disease id, to retrieve one disease type
     stmt = db.select(Disease).filter_by(id=id)
     disease = db.session.scalar(stmt)
     if disease:
@@ -51,6 +52,7 @@ def authorise_as_admin(fn):
 @jwt_required()
 @authorise_as_admin
 def delete_case(id):
+    #filter by id to select disease type to delete
     stmt = db.select(Disease).filter_by(id=id)
     disease = db.session.scalar(stmt)
     if disease:
@@ -65,6 +67,7 @@ def delete_case(id):
 @authorise_as_admin
 def update_case(id):
     body_data = case_schema.load(request.get_json(), partial=True)
+    #filter by id to select disease type to update
     stmt = db.select(Disease).filter_by(id=id)
     disease = db.session.scalar(stmt)
     try:

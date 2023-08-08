@@ -1,5 +1,5 @@
 import functools
-from flask import Blueprint, request
+from flask import Blueprint, request, render_template
 from psycopg2 import errorcodes
 from init import db
 from models.user import User
@@ -55,6 +55,7 @@ def authorise_as_admin(fn):
     @functools.wraps(fn)
     def wrapper(*args, **kwargs):
         case_id = get_jwt_identity()
+        #filter by case id, to retrieve case to be deleted.
         stmt = db.select(User).filter_by(id=case_id)
         user = db.session.scalar(stmt)
         if user.is_admin:
@@ -68,6 +69,7 @@ def authorise_as_admin(fn):
 @jwt_required()
 @authorise_as_admin
 def delete_case(id):
+    #filter by case id, to retrieve case to be deleted
     stmt = db.select(Case).filter_by(id=id)
     case = db.session.scalar(stmt)
     if case or str(case.user_id) == get_jwt_identity() :
@@ -80,6 +82,7 @@ def delete_case(id):
 @cases_bp.route('/<int:id>', methods=['PUT', 'PATCH'])
 @jwt_required()
 def update_case(id):
+    #filter by case id, to update case.
     body_data = case_schema.load(request.get_json(), partial=True)
     stmt = db.select(Case).filter_by(id=id)
     case = db.session.scalar(stmt)
@@ -101,3 +104,6 @@ def update_case(id):
             return {'Error': f'Unable to update case,{err.orig.diag.message_detail} '}, 409
         if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
             return {'Error': f'The {err.orig.diag.column_name} is required'}, 409
+
+
+

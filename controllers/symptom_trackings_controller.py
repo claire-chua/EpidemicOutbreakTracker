@@ -57,7 +57,8 @@ def authorise_as_admin(fn):
 @jwt_required()
 @authorise_as_admin
 def delete_symptom_tracking(id):
-    stmt = db.select(Case).filter_by(id=id)
+    #filter by symptom tracking id to delete
+    stmt = db.select(Symptom_Tracking).filter_by(id=id)
     symptom_tracking = db.session.scalar(stmt)
     if symptom_tracking or str(symptom_tracking.user_id) == get_jwt_identity():
         db.session.delete(symptom_tracking)
@@ -70,6 +71,7 @@ def delete_symptom_tracking(id):
 @jwt_required()
 def update_symptom_tracking(id):
     body_data = symptom_tracking_schema.load(request.get_json(), partial=True)
+    #filter by symptom tracking id to update
     stmt = db.select(Symptom_Tracking).filter_by(id=id)
     symptom_tracking = db.session.scalar(stmt)
     try:

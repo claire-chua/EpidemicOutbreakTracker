@@ -1,5 +1,7 @@
+import marshmallow
+
 from init import db, ma
-from marshmallow import fields, validates
+from marshmallow import fields, validate, ValidationError
 from marshmallow.validate import OneOf
 from models.user import User
 
@@ -27,7 +29,8 @@ class CaseSchema(ma.Schema):
     user = fields.List(fields.Nested('UserSchema', only=['name', 'email']))
     disease = fields.List(fields.Nested('DiseaseSchema'), only=['name'])
 
-    status = fields.String(validate=OneOf(VALID_STATUSES))
+
+    status = fields.String(validate=OneOf(VALID_STATUSES, error='Please input a valid status: '))
 
     class Meta:
         fields = ('id', 'status', 'location', 'date', 'user_id', 'disease_id', 'disease_name')

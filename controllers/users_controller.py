@@ -2,7 +2,7 @@ import functools
 import json
 from datetime import timedelta
 
-from flask import Blueprint, request
+from flask import Blueprint, request, redirect, url_for, render_template
 from flask_jwt_extended import verify_jwt_in_request, jwt_required, create_access_token, get_jwt_identity
 from sqlalchemy import select
 
@@ -51,6 +51,7 @@ def authorise_as_admin(fn):
     @functools.wraps(fn)
     def wrapper(*args, **kwargs):
         user_id = get_jwt_identity()
+        #filter by user_id to check for admin priviledge
         stmt = db.select(User).filter_by(id=user_id)
         user = db.session.scalar(stmt)
         if user.is_admin:
@@ -65,6 +66,7 @@ def authorise_as_admin(fn):
 @jwt_required()
 @authorise_as_admin
 def delete_user(id):
+    #filter by user id to delete user
     stmt = db.select(User).filter_by(id=id)
     user = db.session.scalar(stmt)
     if user:
@@ -85,10 +87,13 @@ def user_login():
         return {'email': user.email, 'token': token, 'is_admin': user.is_admin}
     else:
         return {'error': 'Invalid email or password'}, 401
+
+
 @users_bp.route('/<id>', methods=['PUT', 'PATCH'])
 @jwt_required()
 def update_user(id):
     body_data = user_schema.load(request.get_json(), partial=True)
+    #filter by user id to update user details
     stmt = db.select(User).filter_by(id=id)
     user = db.session.scalar(stmt)
     try:
@@ -107,3 +112,6 @@ def update_user(id):
     except exc.IntegrityError as err:
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
             return {'Error': f'Unable to update user,{err.orig.diag.message_detail} '}, 409
+
+
+
